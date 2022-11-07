@@ -1,73 +1,41 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Monitoring Azure Database for PostgreSQL - Flexible Server
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
+## Metrics - list and alerts
 
 ```bash
-$ npm install
+# Metrics
+List of available metrics: [click here](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-monitoring)
+
+# How to set up alerts on metrics:
+[click here to see the official guide](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/howto-alert-on-metrics)
+1. Go to [Azure portal] (https://portal.azure.com/) and select the Azure Database for PostgreSQL server you want to monitor.
+2. Click on "Alerts" (under the Monitoring section of the sidebar).
+3. Click on "Create" then click "Alert rule".
+4. Under "Condition" select a metric from the list of signals to be alerted on.
+    (We followed the "Read Throughput Bytes/Sec" and "Transaction Log Storage Used" since we saw spikes on DB on those specific metrics)
+    For "Read Throughput Bytes/Sec" the "Unit" was "M" with a "threshold value" 0.5.
+    For "Transaction Log Storage Used" the "Unit" was "MB" with a "threshold value" 600.
+5. Select the "time range" of the "Preview" section to "over last week" to see an overview of that metric the threshold.
+6. Select "Unit" and "threshold value".
+7. Under the "Action" tab select an "action group". (I created a new action group called "Dev" under the "wd_egn_test" resource which contains "2 Emails" (angel.k.wiredelta@gmail.com and dg@wiredelta.com))
+8. Fill the rest of the mandatory fields under the "Details" tab then review and create
 ```
 
-## Running the app
+## Configure and access logs
 
 ```bash
-# development
-$ npm run start
+#How to configure and access logs
+[click here to see the official guide](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/howto-configure-and-access-logs)
+1. In the [Azure portal] (https://portal.azure.com/) and select the Azure Database for PostgreSQL server you want to monitor.
+2. Go to "Diagnostic Settings" in the sidebar of your Postgres server.
+3. Select "Add Diagnostic Setting".
+4. Name this setting.
+5. Select your preferred endpoint (storage account, event hub, log analytics).
+    (We selected the "Send to Log Analytics")
+6. Select the log type PostgreSQLLogs.
+7. Save your setting.
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+#Usefull links
+Fields for the PostgreSQLLogs type: [click here](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-logging?source=recommendations)
+Log queries in Azure Monitor: [click here] (https://learn.microsoft.com/en-us/azure/azure-monitor/logs/log-query-overview)
 ```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
